@@ -13,8 +13,8 @@ default["baremetal"]["imagebuild_packages"] = ["busybox", "tgt", "qemu-kvm"]
 default["baremetal"]["pxe"]["packages"] = ["syslinux", "dnsmasq"]
 default["baremetal"]["pxe"]["tftproot"] = "/tftpboot"
 default["baremetal"]["pxe"]["config_dir"] = "/tftpboot/pxelinux.cfg"
-default["baremetal"]["pxe"]["dhcp_range"] = "192.168.175.100,192.168.175.254" # if all static hosts, we sure to use just the subnet
-default["baremetal"]["pxe"]["static_dhcp"] = false # right now this is all or none. move this into the data bag item
+default["baremetal"]["pxe"]["dhcp_range"] = "192.168.175.100,192.168.175.254"
+default["baremetal"]["pxe"]["static_dhcp"] = false
 
 default["baremetal"]["nodes"]["databag"] = nil
 

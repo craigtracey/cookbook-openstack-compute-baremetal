@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-# Allow for using a well known db password
+# Allow for using a well-known db password
 if node["developer_mode"]
   node.set_unless["baremetal"]["db"]["password"] = "nova_bm"
 else

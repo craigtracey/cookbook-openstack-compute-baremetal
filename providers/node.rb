@@ -102,7 +102,4 @@ action :create do
     Chef::Log.error("Creation of baremetal node interface '#{new_resource.prov_mac_address}' failed.")
   end
 
-
-
-
 end

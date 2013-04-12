@@ -51,7 +51,6 @@ if node["baremetal"]["pxe"]["static_dhcp"]
   else
     Chef::Log.warning("Attribute static_dhcp is true, but no data_bag provided")
   end
-
 end
 
 template "/etc/dnsmasq.d/nova-baremetal" do
