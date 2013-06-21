@@ -1,10 +1,10 @@
 # This file is managed by Chef!
 port=0
 enable-tftp
-tftp-root=<%= node["baremetal"]["pxe"]["tftproot"] %>
+tftp-root=<%= @tftproot %>
 dhcp-boot=pxelinux.0
 bind-interfaces
-dhcp-range=<%= node["baremetal"]["pxe"]["dhcp_range"] %>
+dhcp-range=<%= @dhcp_range %>
 <% @static_dhcp_hosts.each do |host| %>
 dhcp-host=<%= host %>
 <% end %>

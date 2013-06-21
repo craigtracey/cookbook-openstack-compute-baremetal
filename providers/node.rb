@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: baremetal
+# Cookbook Name:: openstack-compute-baremetal
 # Provider:: node
 #
 # Copyright 2013, Craig Tracey <craigtracey@gmail.com>
@@ -20,17 +20,6 @@
 require 'chef/mixin/shell_out'
 include Chef::Mixin::ShellOut
 
-private
-def generate_creds(res)
-  ks_endpoint = res.keystone_admin_endpoint
-  keystone_url = ks_endpoint['scheme'] + "://" + ks_endpoint['host'] + ':' + ks_endpoint['port'] + '/' + ks_endpoint['path']
-  return {
-    'OS_TENANT_NAME' => res.auth_tenant,
-    'OS_USERNAME' => res.auth_user,
-    'OS_AUTH_URL' => keystone_url,
-    'OS_PASSWORD' => res.auth_password }
-end
-
 action :create do
 
   optional_args = [
@@ -47,7 +36,13 @@ action :create do
     'local_gb',
     'prov_mac_address' ]
 
-  creds = generate_creds(new_resource)
+  creds = {
+    'OS_AUTH_TOKEN' => res.bootstrap_token,
+    'OS_AUTH_URL' => res.auth_uri
+  }
+
+  node_updated = false
+  interface_updated = false
 
   # first check to see if this node exists
   checkcmd = shell_out(['nova', 'baremetal-node-list'], :env => creds)
@@ -64,15 +59,16 @@ action :create do
   optional_args.each do |arg|
     value = new_resource.instance_variable_get("@#{arg}")
     if !value.nil?
-      cmdparams.concat ["--#{arg}", "#{value}" ]
+      cmdparams.concat ["--#{arg}", value]
     end
   end
 
   positional_args.each do |arg|
     value = new_resource.instance_variable_get("@#{arg}")
     if !value.nil?
-      cmdparams.concat [ "#{value}" ]
+      cmdparams.concat [value]
     else
+      new_resource.updated_by_last_action(false)
       raise "Missing attribute '#{arg}' for baremetal_node[#{new_resource.prov_mac_address}]"
     end
   end
@@ -88,6 +84,7 @@ action :create do
       end
     end
 
+    node_updated = true
     Chef::Log.info("Created baremetal node '#{new_resource.prov_mac_address}' #{nodecmd.stderr}")
   else
     Chef::Log.error("Creation of baremetal node '#{new_resource.prov_mac_address}' failed.")
@@ -97,9 +94,17 @@ action :create do
   interfaceparams = ['nova', 'baremetal-interface-add', node_id, new_resource.prov_mac_address]
   interfacecmd = shell_out(interfaceparams, :env => creds)
   if interfacecmd.exitstatus == 0
+    interface_updated = true
     Chef::Log.info("Created baremetal node interface '#{new_resource.prov_mac_address}'")
   else
     Chef::Log.error("Creation of baremetal node interface '#{new_resource.prov_mac_address}' failed.")
+  end
+
+  # this is a bit more verbose than necessary but we need it to keep foodcritic happy
+  if node_updated and interface_updated
+    new_resource.updated_by_last_action(true)
+  else
+    new_resource.updated_by_last_action(false)
   end
 
 end

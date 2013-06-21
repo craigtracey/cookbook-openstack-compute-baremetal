@@ -1,10 +1,10 @@
-name              "baremetal"
+name              "openstack-compute-baremetal"
 maintainer        "Craig Tracey"
 maintainer_email  "craigtracey@gmail.com"
 license           "Apache 2.0"
-description       "The OpenStack Nova Compute Baremetal Driver"
+description       "The OpenStack Compute Baremetal Driver Chef Cookbook"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version           "2013.1.1"
+version           "7.0.0"
 
 recipe            "database", ""
 recipe		        "default", ""
@@ -16,6 +16,5 @@ recipe            "setup", ""
   supports os
 end
 
-%w{ apt nova }.each do |dep|
-  depends dep
-end
+depends "openstack-common", "~> 0.3.1"
+depends "openstack-compute", "7.0.0"

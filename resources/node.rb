@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: baremetal
+# Cookbook Name:: openstack-compute-baremetal
 # Resource:: node
 #
 # Copyright 2013, Craig Tracey <craigtracey@gmail.com>
@@ -26,10 +26,8 @@ def initialize(*args)
   @action = :create
 end
 
-attribute :keystone_admin_endpoint, :required => true
-attribute :auth_tenant, :kind_of => String, :required => true
-attribute :auth_user, :kind_of => String, :required => true
-attribute :auth_password, :kind_of => String, :required => true
+attribute :auth_uri, :kind_of => String, :required => true
+attribute :bootstrap_token, :kind_of => String, :required => true
 
 attribute :service_host, :kind_of => String, :required => true, :name_attribute => true
 attribute :cpus, :kind_of => Integer

@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: baremetal
+# Cookbook Name:: openstack-compute-baremetal
 # Recipe:: pxe
 #
 # Copyright 2013, Craig Tracey <craigtracey@gmail.com>
@@ -17,35 +17,35 @@
 # limitations under the License.
 #
 
-node["baremetal"]["pxe"]["packages"].each do |pkg|
+node["openstack"]["compute"]["baremetal"]["pxe"]["packages"].each do |pkg|
   package pkg
 end
 
-directory node["baremetal"]["pxe"]["tftproot"] do
+directory node["openstack"]["compute"]["baremetal"]["pxe"]["tftproot"] do
   owner "root"
   group "root"
   mode 00755
   action :create
 end
 
-directory node["baremetal"]["pxe"]["config_dir"] do
+directory node["openstack"]["compute"]["baremetal"]["pxe"]["config_dir"] do
   owner "root"
   group "root"
   mode 00755
   action :create
 end
 
-link "#{node["baremetal"]["pxe"]["tftproot"]}/pxelinux.0" do
+link "#{node["openstack"]["compute"]["baremetal"]["pxe"]["tftproot"]}/pxelinux.0" do
   to "/usr/lib/syslinux/pxelinux.0"
 end
 
 static_dhcp_hosts = []
-if node["baremetal"]["pxe"]["static_dhcp"]
+if node["openstack"]["compute"]["baremetal"]["pxe"]["static_dhcp"]
 
-  if node["baremetal"]["nodes"]["databag"]
-    node_names = data_bag(node["baremetal"]["nodes"]["databag"])
+  if node["openstack"]["compute"]["baremetal"]["nodes"]["databag"]
+    node_names = data_bag(node["openstack"]["compute"]["baremetal"]["nodes"]["databag"])
     node_names.each do |name|
-      bmnode = data_bag_item(node["baremetal"]["nodes"]["databag"], name)
+      bmnode = data_bag_item(node["openstack"]["compute"]["baremetal"]["nodes"]["databag"], name)
       static_dhcp_hosts.push("#{bmnode['prov_mac_address']}:#{bmnode['ip_address']}")
     end
   else
@@ -56,7 +56,9 @@ end
 template "/etc/dnsmasq.d/nova-baremetal" do
   source "dnsmasq.conf.erb"
   variables(
-    "static_dhcp_hosts" => static_dhcp_hosts
+    :tftproot => node["openstack"]["compute"]["baremetal"]["pxe"]["tftproot"],
+    :dhcp_range => node["openstack"]["compute"]["baremetal"]["pxe"]["dhcp_range"],
+    :static_dhcp_hosts => static_dhcp_hosts
   )
 end
 

@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: baremetal
+# Cookbook Name:: openstack-compute-baremetal
 # Recipe:: default
 #
 # Copyright 2013, Craig Tracey <craigtracey@gmail.com>

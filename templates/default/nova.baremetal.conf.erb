@@ -1,13 +1,19 @@
+[DEFAULT]
+scheduler_host_manager=nova.scheduler.baremetal_host_manager.BaremetalHostManager
+firewall_driver=nova.virt.firewall.NoopFirewallDriver
+compute_driver=nova.virt.baremetal.driver.BareMetalDriver
+ram_allocation_ratio=1.0
+reserved_host_memory_mb=0
+
 ##### NOVA BAREMETAL #####
 [baremetal]
-scheduler_host_manager=nova.scheduler.baremetal_host_manager.BaremetalHostManager
-sql_connection=mysql://<%= @baremetal_db_user %>:<%= @baremetal_db_password %>@<%= @db_ipaddress %>/<%= @baremetal_db_name %>
-<% if @baremetal_boot_method == "pxe" -%>
+sql_connection=<%= @sql_connection %>
+<% if @boot_method == "pxe" -%>
 baremetal_driver=nova.virt.baremetal.pxe.PXE
-baremetal_tftp_root=<%= @baremetal_tftproot %>
+baremetal_tftp_root=<%= @tftproot %>
 <% end -%>
-<% if @baremetal_power_manager == "ipmi" -%>
+<% if @power_manager == "ipmi" -%>
 power_manager=nova.virt.baremetal.ipmi.IPMI
 <% end -%>
-deploy_kernel=<%= @baremetal_deploy_kernel %>
-deploy_ramdisk=<%= @baremetal_deploy_ramdisk %>
+deploy_kernel=<%= @deploy_kernel %>
+deploy_ramdisk=<%= @deploy_ramdisk %>

@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: baremetal
+# Cookbook Name:: openstack-compute-baremetal
 # Recipe:: nodes
 #
 # Copyright 2013, Craig Tracey <craigtracey@gmail.com>
@@ -17,19 +17,21 @@
 # limitations under the License.
 #
 
-if node["baremetal"]["nodes"]["databag"]
+nodes_data_bag = node["openstack"]["compute"]["baremetal"]["nodes"]["databag"]
 
-  ks_admin_endpoint = get_access_endpoint("keystone", "keystone", "admin-api")
-  node_names = data_bag(node["baremetal"]["nodes"]["databag"])
+if nodes_data_bag
+
+  identity_endpoint = endpoint "identity-admin-api"
+  bootstrap_token = secret "secrets", "openstack_identity_bootstrap_token"
+  auth_uri = ::URI.decode identity_admin_endpoint.to_s
+  node_names = data_bag(nodes_data_bag)
 
   node_names.each do |name|
 
-    bmnode = data_bag_item(node["baremetal"]["nodes"]["databag"], name)
-    baremetal_node "#{bmnode['prov_mac_address']}" do
-      keystone_admin_endpoint ks_admin_endpoint
-      auth_tenant node["nova"]["service_tenant_name"]
-      auth_user node["nova"]["service_user"]
-      auth_password node["nova"]["service_pass"]
+    bmnode = data_bag_item(nodes_data_bag, name)
+    baremetal_node bmnode['prov_mac_address'] do
+      auth_uri auth_uri
+      bootstrap_token bootstrap_token
 
       service_host bmnode['service_host']
       cpus bmnode['cpus']

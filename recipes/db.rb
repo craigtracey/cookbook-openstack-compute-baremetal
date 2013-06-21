@@ -1,6 +1,6 @@
 #
-# Cookbook Name:: baremetal
-# Recipe:: database
+# Cookbook Name:: openstack-compute-baremetal
+# Recipe:: db
 #
 # Copyright 2013, Craig Tracey <craigtracey@gmail.com>
 #
@@ -17,16 +17,13 @@
 # limitations under the License.
 #
 
-# Allow for using a well-known db password
-if node["developer_mode"]
-  node.set_unless["baremetal"]["db"]["password"] = "nova_bm"
-else
-  node.set_unless["baremetal"]["db"]["password"] = secure_password
+class ::Chef::Recipe
+  include ::Openstack
 end
 
-mysql_info = create_db_and_user("mysql",
-                   node["baremetal"]["db"]["name"],
-                   node["baremetal"]["db"]["username"],
-                   node.set_unless["baremetal"]["db"]["password"])
+db_pass = db_password "nova_bm"
 
-node.default["baremetal"]["nova_template_data"]["variables"]["db_ipaddress"] = mysql_info["bind_address"]
+db_create_with_user("compute-baremetal",
+  node["openstack"]["compute"]["baremetal"]["db"]["username"],
+  db_pass
+)

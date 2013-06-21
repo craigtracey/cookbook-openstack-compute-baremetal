@@ -1,36 +1,22 @@
-default["baremetal"]["boot_method"] = "pxe"
-default["baremetal"]["power_manager"] = "ipmi"
+default["openstack"]["compute"]["baremetal"]["boot_method"] = "pxe"
+default["openstack"]["compute"]["baremetal"]["power_manager"] = "ipmi"
 
-default["baremetal"]["deploy_kernel"] = nil
-default["baremetal"]["deploy_ramdisk"] = nil
+default["openstack"]["compute"]["baremetal"]["deploy_kernel"] = nil
+default["openstack"]["compute"]["baremetal"]["deploy_ramdisk"] = nil
 
-default["baremetal"]["db"]["name"] = "nova_bm"
-default["baremetal"]["db"]["username"] = "nova_bm"
+default["openstack"]["compute"]["baremetal"]["db"]["name"] = "nova_bm"
+default["openstack"]["compute"]["baremetal"]["db"]["username"] = "nova_bm"
 
-default["baremetal"]["packages"] = ["nova-baremetal", "ipmitool", "open-iscsi"]
-default["baremetal"]["imagebuild_packages"] = ["busybox", "tgt", "qemu-kvm"]
+case platform
+when "ubuntu" 
+  default["openstack"]["compute"]["baremetal"]["packages"] = ["nova-baremetal", "ipmitool", "open-iscsi"]
+  default["openstack"]["compute"]["baremetal"]["imagebuild_packages"] = ["busybox", "tgt", "qemu-kvm"]
+  default["openstack"]["compute"]["baremetal"]["pxe"]["packages"] = ["syslinux", "dnsmasq"]
+end
 
-default["baremetal"]["pxe"]["packages"] = ["syslinux", "dnsmasq"]
-default["baremetal"]["pxe"]["tftproot"] = "/tftpboot"
-default["baremetal"]["pxe"]["config_dir"] = "/tftpboot/pxelinux.cfg"
-default["baremetal"]["pxe"]["dhcp_range"] = "192.168.175.100,192.168.175.254"
-default["baremetal"]["pxe"]["static_dhcp"] = false
+default["openstack"]["compute"]["baremetal"]["pxe"]["tftproot"] = "/tftpboot"
+default["openstack"]["compute"]["baremetal"]["pxe"]["config_dir"] = "/tftpboot/pxelinux.cfg"
+default["openstack"]["compute"]["baremetal"]["pxe"]["dhcp_range"] = "192.168.175.100,192.168.175.254"
+default["openstack"]["compute"]["baremetal"]["pxe"]["static_dhcp"] = false
 
-default["baremetal"]["nodes"]["databag"] = nil
-
-default["baremetal"]["driver_template"] = "nova.baremetal.conf.erb"
-
-default["baremetal"]["nova_template_data"] = {
-  "cookbook" => "baremetal",
-  "template" => node["baremetal"]["driver_template"],
-  "variables" => {
-    "baremetal_db_user" => node["baremetal"]["db"]["username"],
-    "baremetal_db_password" => node["baremetal"]["db"]["password"],
-    "baremetal_db_name" => node["baremetal"]["db"]["name"],
-    "baremetal_boot_method" => node["baremetal"]["boot_method"],
-    "baremetal_tftproot" => default["baremetal"]["pxe"]["tftproot"],
-    "baremetal_power_manager" => node["baremetal"]["power_manager"],
-    "baremetal_deploy_kernel" => node["baremetal"]["deploy_kernel"],
-    "baremetal_deploy_ramdisk" => node["baremetal"]["deploy_ramdisk"]
-  }
-}
+default["openstack"]["compute"]["baremetal"]["nodes"]["databag"] = nil
