@@ -58,6 +58,7 @@ template "/etc/dnsmasq.d/nova-baremetal" do
   variables(
     :tftproot => node["openstack"]["compute"]["baremetal"]["pxe"]["tftproot"],
     :dhcp_range => node["openstack"]["compute"]["baremetal"]["pxe"]["dhcp_range"],
+    :dhcp_gateway => node["openstack"]["compute"]["baremetal"]["pxe"]["dhcp_gateway"],
     :static_dhcp_hosts => static_dhcp_hosts
   )
 end

@@ -5,6 +5,9 @@ tftp-root=<%= @tftproot %>
 dhcp-boot=pxelinux.0
 bind-interfaces
 dhcp-range=<%= @dhcp_range %>
+<% if @dhcp_gateway -%>
+dhcp-option=option:router,<%= @dhcp_gateway %>
+<% end -%>
 <% @static_dhcp_hosts.each do |host| %>
 dhcp-host=<%= host %>
 <% end %>
