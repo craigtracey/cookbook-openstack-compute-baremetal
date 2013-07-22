@@ -21,9 +21,9 @@ nodes_data_bag = node["openstack"]["compute"]["baremetal"]["nodes"]["databag"]
 
 if nodes_data_bag
 
-  identity_endpoint = endpoint "identity-admin-api"
+  identity_endpoint = endpoint "identity-admin"
   bootstrap_token = secret "secrets", "openstack_identity_bootstrap_token"
-  auth_uri = ::URI.decode identity_admin_endpoint.to_s
+  auth_uri = ::URI.decode identity_endpoint.to_s
   node_names = data_bag(nodes_data_bag)
 
   node_names.each do |name|
