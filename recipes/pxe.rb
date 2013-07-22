@@ -46,7 +46,7 @@ if node["openstack"]["compute"]["baremetal"]["pxe"]["static_dhcp"]
     node_names = data_bag(node["openstack"]["compute"]["baremetal"]["nodes"]["databag"])
     node_names.each do |name|
       bmnode = data_bag_item(node["openstack"]["compute"]["baremetal"]["nodes"]["databag"], name)
-      static_dhcp_hosts.push("#{bmnode['prov_mac_address']}:#{bmnode['ip_address']}")
+      static_dhcp_hosts.push("#{bmnode['prov_mac_address']},#{bmnode['ip_address']}")
     end
   else
     Chef::Log.warning("Attribute static_dhcp is true, but no data_bag provided")
