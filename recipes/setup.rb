@@ -33,6 +33,15 @@ execute "nova-baremetal-manage db sync" do
   action :run
 end
 
+te "/etc/nova/rootwrap.d/compute.baremetal.filters" do
+  source  "compute.baremetal.filters.erb"
+  owner   "root"
+  group   "root"
+  mode    00755
+
+  notifies :restart, "service[nova-compute]", :delayed
+end
+
 service "nova-baremetal" do
   service_name  "nova-baremetal"
   supports      :status => true, :restart => true
