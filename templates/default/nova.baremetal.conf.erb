@@ -15,5 +15,9 @@ baremetal_tftp_root=<%= @tftproot %>
 <% if @power_manager == "ipmi" -%>
 power_manager=nova.virt.baremetal.ipmi.IPMI
 <% end -%>
+<% if @deploy_kernel -%>
 deploy_kernel=<%= @deploy_kernel %>
+<% end -%>
+<% if @deploy_ramdisk -%>
 deploy_ramdisk=<%= @deploy_ramdisk %>
+<% end -%>
