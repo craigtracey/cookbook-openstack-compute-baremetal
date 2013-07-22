@@ -6,8 +6,9 @@ description       "The OpenStack Compute Baremetal Driver Chef Cookbook"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version           "7.0.0"
 
+recipe            "config", ""
 recipe            "database", ""
-recipe		        "default", ""
+recipe            "default", ""
 recipe            "nodes", ""
 recipe            "pxe", ""
 recipe            "setup", ""

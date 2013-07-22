@@ -25,40 +25,20 @@ node["openstack"]["compute"]["baremetal"]["packages"].each do |pkg|
   package pkg
 end
 
-db_user = node["openstack"]["compute"]["baremetal"]["db"]["username"]
-db_pass = db_password "nova_bm"
-sql_connection = db_uri("compute-baremetal", db_user, db_pass)
-
-config_dir = node["openstack"]["compute"]["config_dir"]
-
-directory config_dir do
-  owner "root"
-  group "root"
-  mode 00755
-  action :create
-end
-
-template "#{config_dir}/nova-baremetal.conf" do
-  source "nova.baremetal.conf.erb"
-  owner "root"
-  group "root"
-  mode 00755
-  variables(
-    :sql_connection => sql_connection,
-    :boot_method => node["openstack"]["compute"]["baremetal"]["boot_method"],
-    :tftproot => node["openstack"]["compute"]["baremetal"]["pxe"]["tftproot"],
-    :power_manager => node["openstack"]["compute"]["baremetal"]["power_manager"],
-    :deploy_kernel => node["openstack"]["compute"]["baremetal"]["deploy_kernel"],
-    :deploy_ramdisk => node["openstack"]["compute"]["baremetal"]["deploy_ramdisk"]
-  )
-  notifies :restart, "service[nova-compute]", :delayed
-end
+config_dir = node["openstack"]["compute"]["baremetal"]["config_dir"]
 
 execute "nova-baremetal-manage db sync" do
   command "nova-baremetal-manage --config-file #{config_dir}/nova-baremetal.conf db sync"
+
   action :run
 end
 
-include_recipe "openstack-compute-baremetal::#{node["openstack"]["compute"]["baremetal"]["boot_method"]}"
+service "nova-baremetal" do
+  service_name  "nova-baremetal"
+  supports      :status => true, :restart => true
+  subscribes    :restart, ["template[/etc/nova/nova.conf]", "template[#{config_dir}/nova-baremetal.conf]"]
 
-include_recipe "openstack-compute-baremetal::nodes"
+  action :enable
+end
+
+include_recipe "openstack-compute-baremetal::#{node["openstack"]["compute"]["baremetal"]["boot_method"]}"

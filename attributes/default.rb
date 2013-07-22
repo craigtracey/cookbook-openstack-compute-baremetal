@@ -21,3 +21,4 @@ default["openstack"]["compute"]["baremetal"]["pxe"]["dhcp_gateway"] = nil
 default["openstack"]["compute"]["baremetal"]["pxe"]["static_dhcp"] = false
 
 default["openstack"]["compute"]["baremetal"]["nodes"]["databag"] = nil
+default["openstack"]["compute"]["baremetal"]["config_dir"] = "/etc/nova/conf.d"
