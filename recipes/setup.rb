@@ -33,7 +33,7 @@ execute "nova-baremetal-manage db sync" do
   action :run
 end
 
-te "/etc/nova/rootwrap.d/compute.baremetal.filters" do
+template "/etc/nova/rootwrap.d/compute.baremetal.filters" do
   source  "compute.baremetal.filters.erb"
   owner   "root"
   group   "root"
