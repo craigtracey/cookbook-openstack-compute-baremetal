@@ -24,6 +24,7 @@ end
 db_pass = db_password "nova_bm"
 
 db_create_with_user("compute-baremetal",
-  node["openstack"]["compute"]["baremetal"]["db"]["username"],
+  "nova_bm",
+#  node["openstack"]["compute"]["baremetal"]["db"]["username"],
   db_pass
 )

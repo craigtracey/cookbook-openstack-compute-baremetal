@@ -17,5 +17,5 @@ recipe            "setup", ""
   supports os
 end
 
-depends "openstack-common", "~> 0.3.1"
+depends "openstack-common", "~> 0.4.1"
 depends "openstack-compute", "7.0.0"
