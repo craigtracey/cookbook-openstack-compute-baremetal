@@ -37,8 +37,8 @@ action :create do
     'prov_mac_address' ]
 
   creds = {
-    'OS_AUTH_TOKEN' => res.bootstrap_token,
-    'OS_AUTH_URL' => res.auth_uri
+    'OS_AUTH_TOKEN' => new_resource.bootstrap_token,
+    'OS_AUTH_URL' => new_resource.auth_uri
   }
 
   node_updated = false
@@ -59,14 +59,14 @@ action :create do
   optional_args.each do |arg|
     value = new_resource.instance_variable_get("@#{arg}")
     if !value.nil?
-      cmdparams.concat ["--#{arg}", value]
+      cmdparams.concat ["--#{arg}", value.to_s]
     end
   end
 
   positional_args.each do |arg|
     value = new_resource.instance_variable_get("@#{arg}")
     if !value.nil?
-      cmdparams.concat [value]
+      cmdparams.concat [value.to_s]
     else
       new_resource.updated_by_last_action(false)
       raise "Missing attribute '#{arg}' for baremetal_node[#{new_resource.prov_mac_address}]"
