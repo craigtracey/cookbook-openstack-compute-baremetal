@@ -29,7 +29,7 @@ if nodes_data_bag
   node_names.each do |name|
 
     bmnode = data_bag_item(nodes_data_bag, name)
-    baremetal_node bmnode['prov_mac_address'] do
+    openstack_compute_baremetal_node bmnode['prov_mac_address'] do
       auth_uri auth_uri
       bootstrap_token bootstrap_token
 
