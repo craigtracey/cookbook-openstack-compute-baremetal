@@ -22,21 +22,25 @@ node["openstack"]["compute"]["baremetal"]["pxe"]["packages"].each do |pkg|
 end
 
 directory node["openstack"]["compute"]["baremetal"]["pxe"]["tftproot"] do
-  owner "root"
-  group "root"
+  owner node["openstack"]["compute"]["baremetal"]["pxe"]["tftp_owner"]
+  group node["openstack"]["compute"]["baremetal"]["pxe"]["tftp_group"]
   mode 00755
+
   action :create
 end
 
 directory node["openstack"]["compute"]["baremetal"]["pxe"]["config_dir"] do
-  owner "root"
-  group "root"
-  mode 00755
+  owner node["openstack"]["compute"]["baremetal"]["pxe"]["tftp_owner"]
+  group node["openstack"]["compute"]["baremetal"]["pxe"]["tftp_group"]
+  mode  00755
+
   action :create
 end
 
 link "#{node["openstack"]["compute"]["baremetal"]["pxe"]["tftproot"]}/pxelinux.0" do
   to "/usr/lib/syslinux/pxelinux.0"
+  owner node["openstack"]["compute"]["baremetal"]["pxe"]["tftp_owner"]
+  group node["openstack"]["compute"]["baremetal"]["pxe"]["tftp_group"]
 end
 
 static_dhcp_hosts = []
@@ -65,6 +69,7 @@ end
 
 service "dnsmasq" do
   supports :status => true, :restart => true
+
   action :enable
   subscribes :restart, "template[/etc/dnsmasq.d/nova-baremetal]"
 end

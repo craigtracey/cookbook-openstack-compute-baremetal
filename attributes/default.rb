@@ -12,6 +12,8 @@ when "ubuntu"
   default["openstack"]["compute"]["baremetal"]["packages"] = ["nova-baremetal", "ipmitool", "open-iscsi"]
   default["openstack"]["compute"]["baremetal"]["imagebuild_packages"] = ["busybox", "tgt", "qemu-kvm"]
   default["openstack"]["compute"]["baremetal"]["pxe"]["packages"] = ["syslinux", "dnsmasq"]
+  default["openstack"]["compute"]["baremetal"]["pxe"]["tftp_owner"] = "nova"
+  default["openstack"]["compute"]["baremetal"]["pxe"]["tftp_group"] = "nova"
 end
 
 default["openstack"]["compute"]["baremetal"]["pxe"]["tftproot"] = "/tftpboot"
